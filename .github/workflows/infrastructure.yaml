@@ -1,11 +1,13 @@
 name: "Infrastructure as Code pipeline"
 
 on:
- push:
-   branches:
-   - main
-   paths:
-   - tf/**
+  push:
+    branches:
+    - main
+    paths:
+    - tf/**
+  workflow_dispatch:
+    
 
 env:
   # verbosity setting for Terraform logs
