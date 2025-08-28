@@ -8,7 +8,7 @@ on:
    - src/main-app/**
 
 jobs:
-  infrastructure:
+  main-app:
     runs-on: ubuntu-latest
     name: Temporary output job
 

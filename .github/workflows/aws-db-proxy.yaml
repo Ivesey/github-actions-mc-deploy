@@ -5,10 +5,10 @@ on:
    branches:
    - main
    paths:
-   - tf/**
+   - src/aws-db-proxy/**
 
 jobs:
-  infrastructure:
+  aws-db-proxy:
     runs-on: ubuntu-latest
     name: Temporary output job
 

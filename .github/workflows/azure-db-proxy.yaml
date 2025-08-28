@@ -5,10 +5,10 @@ on:
    branches:
    - main
    paths:
-   - src/azure-proxy/**
+   - src/azure-db-proxy/**
 
 jobs:
-  infrastructure:
+  azure-db-proxy:
     runs-on: ubuntu-latest
     name: Temporary output job
 
