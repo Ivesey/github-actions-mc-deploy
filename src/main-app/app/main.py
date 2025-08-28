@@ -13,17 +13,20 @@ import traceback
 
 templates = Jinja2Templates(directory='/code/app/templates')
 
-
-async def root(request):
-    nodename = os.getenv('NODE_NAME', 'unknown')
-    podname = os.getenv('POD_NAME', 'unknown')
-    namespace = os.getenv('NAMESPACE', 'unknown')
+def fake_proxy_invoke():
     try:
         response = urllib.request.urlopen("http://localhost:9090")
         db_proxy_response = response.read().decode('utf-8')
     except Exception as e:
         print(traceback.format_exc())
-        db_proxy_response = "no backing service found"
+        db_proxy_response = "no database proxy found"
+    return db_proxy_response
+
+async def root(request):
+    nodename = os.getenv('NODE_NAME', 'unknown')
+    podname = os.getenv('POD_NAME', 'unknown')
+    namespace = os.getenv('NAMESPACE', 'unknown')
+    db_proxy_response = fake_proxy_invoke()
 
     return templates.TemplateResponse('index.html',{
         'request': request,

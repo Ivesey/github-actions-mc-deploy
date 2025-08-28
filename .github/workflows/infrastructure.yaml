@@ -7,11 +7,115 @@ on:
    paths:
    - tf/**
 
+env:
+  # verbosity setting for Terraform logs
+  TF_LOG: INFO
+  # Credentials for deployment to AWS
+  # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  # S3 bucket for the Terraform state
+  BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
+  AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+  AWS_REGION: eu-west-2
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   infrastructure:
+    name: Create or update EKS and AKS clusters
     runs-on: ubuntu-latest
-    name: Temporary output job
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./tf
 
     steps:
-      - name: Hygiene check
-        run: echo "IaC pipeline"
+      - name: Checkout the repository to the runner
+        id: checkout
+        uses: actions/checkout@v2
+ 
+      - name: Configure AWS credentials
+        # id: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          role-session-name: github-actions-demo
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: AWS hygiene check
+        run: |
+          aws s3 ls
+        continue-on-error: true
+
+      - name: Configure Azure credentials
+        uses: azure/login@a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Azure hygiene check
+        run: |
+          az account show
+          az group list
+
+      - name: Setup Terraform with specified previous license version on the runner
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.0
+    
+      - name: Terraform init
+        id: init
+        run: terraform init -backend-config="bucket=$BUCKET_TF_STATE"
+ 
+      - name: Terraform format
+        id: fmt
+        run: terraform fmt -check
+    
+      - name: Terraform validate
+        id: validate
+        run: terraform validate
+ 
+
+      # - name: Terraform plan
+      #   id: plan
+      #   # if: github.event_name == 'pull_request'
+      #   run: terraform plan -no-color -input=false
+      #   continue-on-error: true
+    
+      # - uses: actions/github-script@v6
+      #   # if: github.event_name == 'pull_request'
+      #   env:
+      #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+      #   with:
+      #     script: |
+      #       const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+      #       #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+      #       #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+      #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+ 
+      #       <details><summary>Show Plan</summary>
+ 
+      #       \`\`\`\n
+      #       ${process.env.PLAN}
+      #       \`\`\`
+ 
+      #       </details>
+      #       *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+ 
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: output
+      #       })
+ 
+      # - name: Terraform Plan Status
+      #   if: steps.plan.outcome == 'failure'
+      #   run: exit 1
+ 
+      # - name: Terraform Apply
+      #   # if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: terraform apply -auto-approve -input=false
