@@ -1,0 +1,17 @@
+name: "Azure Proxy Pipeline"
+
+on:
+ push:
+   branches:
+   - main
+   paths:
+   - src/azure-proxy/**
+
+jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    name: Temporary output job
+
+    steps:
+      - name: Hygiene check
+        run: echo "Azure Proxy pipeline"

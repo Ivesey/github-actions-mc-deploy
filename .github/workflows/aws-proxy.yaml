@@ -1,0 +1,17 @@
+name: "AWS Proxy pipeline"
+
+on:
+ push:
+   branches:
+   - main
+   paths:
+   - tf/**
+
+jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    name: Temporary output job
+
+    steps:
+      - name: Hygiene check
+        run: echo "AWS Proxy pipeline"

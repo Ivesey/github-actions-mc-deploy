@@ -1,0 +1,17 @@
+name: "Main App Pipeline"
+
+on:
+ push:
+   branches:
+   - main
+   paths:
+   - src/main-app/**
+
+jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    name: Temporary output job
+
+    steps:
+      - name: Hygiene check
+        run: echo "Main App pipeline"
