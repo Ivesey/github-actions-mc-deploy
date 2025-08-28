@@ -1,3 +1,3 @@
 variable "change_to_trigger" {
-    default = "v2"
+    default = "v3"
 }
