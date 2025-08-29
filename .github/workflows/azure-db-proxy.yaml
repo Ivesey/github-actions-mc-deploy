@@ -1,11 +1,12 @@
 name: "Azure Proxy Pipeline"
 
 on:
- push:
-   branches:
-   - main
-   paths:
-   - src/azure-db-proxy/**
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    paths:
+    - src/azure-db-proxy/**
 
 env:
   REGISTRY: ghcr.io
