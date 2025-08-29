@@ -21,3 +21,9 @@ jobs:
       image-name: ${{ github.actor }}/gha-demo-main-app
       working-directory: ./src/main-app
     secrets: inherit
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
