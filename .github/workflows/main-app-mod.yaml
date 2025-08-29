@@ -1,0 +1,22 @@
+name: "Main App Pipeline"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    paths:
+    - src/main-app/**
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.actor }}/gha-demo-main-app
+  WORKING_DIRECTORY: ./src/main-app
+
+jobs:
+  build-and-push-main-app:
+    uses: ./.github/workflows/build-and-publish.yaml
+    with:
+      registry: ${{ env.REGISTRY }}
+      image-name: ${{ env.IMAGE_NAME }}
+      working-directory: ${{ env.WORKING_DIRECTORY }}
