@@ -17,6 +17,6 @@ jobs:
   build-and-push-main-app:
     uses: ./.github/workflows/build-and-publish.yaml
     with:
-      registry: ${{ env.REGISTRY }}
-      image-name: ${{ env.IMAGE_NAME }}
-      working-directory: ${{ env.WORKING_DIRECTORY }}
+      registry: ghcr.io
+      image-name: ${{ github.actor }}/gha-demo-main-app
+      working-directory: ./src/main-app
