@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: gha-demo-main-app
+  IMAGE_NAME: ${{ github.actor }}/gha-demo-main-app
 
 jobs:
   build-and-push-main-app:
