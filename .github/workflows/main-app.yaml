@@ -57,7 +57,7 @@ jobs:
         id: push
         uses: docker/build-push-action@v6
         with:
-          # context: ${{ defaults.run.working-directory }}
+          context: ${{ defaults.run.working-directory }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
