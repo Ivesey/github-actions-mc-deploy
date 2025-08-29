@@ -20,3 +20,4 @@ jobs:
       registry: ghcr.io
       image-name: ${{ github.actor }}/gha-demo-main-app
       working-directory: ./src/main-app
+    secrets: inherit
