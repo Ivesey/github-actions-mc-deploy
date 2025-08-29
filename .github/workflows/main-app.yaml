@@ -8,11 +8,6 @@ on:
     paths:
     - src/main-app/**
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.actor }}/gha-demo-main-app
-  WORKING_DIRECTORY: ./src/main-app
-
 jobs:
   build-and-push-main-app:
     uses: ./.github/workflows/build-and-publish.yaml
