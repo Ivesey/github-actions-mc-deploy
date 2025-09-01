@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: main-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: main-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: main-app
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: main-app
+        image: ghcr.io/Ivesey/gha-demo-main-app:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+          limits:
+            cpu: 250m
+            memory: 250Mi
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+      - name: proxy
+        image: ghcr.io/Ivesey/gha-demo-azure-db-proxy:latest
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+          limits:
+            cpu: 250m
+            memory: 250Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: main-app
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: main-app
