@@ -12,8 +12,8 @@ jobs:
   build-and-push-main-app:
     uses: ./.github/workflows/build-and-publish.yaml
     with:
-      registry: ghcr.io
-      image-name: ${{ github.actor }}/gha-demo-main-app
+      registry: ${{ vars.REGISTRY_TO_PUSH_TO }}
+      image-name: ${{ github.actor }}/${{ vars.MAIN_APP_IMAGE }}
       working-directory: ./src/main-app
     secrets: inherit
 
@@ -22,3 +22,22 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+  
+  deploy-aws:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4.3.1
+      #   with:
+      #     role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+      #     role-session-name: github-actions-demo
+      #     aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Update deployment
+        run: |
+          echo url: ${{ vars.REGISTRY_TO_PUSH_TO }}/${{ github.actor }}/${{ vars.MAIN_APP_IMAGE }}:${{ github.sha }}

@@ -12,8 +12,8 @@ jobs:
   build-and-push-aws-db-proxy:
     uses: ./.github/workflows/build-and-publish.yaml
     with:
-      registry: ghcr.io
-      image-name: ${{ github.actor }}/gha-demo-aws-db-proxy
+      registry: ${{ vars.REGISTRY_TO_PUSH_TO }}
+      image-name: ${{ github.actor }}/${{ vars.AWS_PROXY_IMAGE }}
       working-directory: ./src/aws-db-proxy
     secrets: inherit
 

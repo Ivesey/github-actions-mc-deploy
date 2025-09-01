@@ -64,6 +64,4 @@ jobs:
 
       - name: Debug
         run: |
-          echo Id: ${{ steps.push.outputs.imageid }}
-          echo Digest: ${{ steps.push.outputs.digest }}
-          echo meta: ${{ steps.push.outputs.metadata }}
+          echo url: ${{ inputs.registry }}/${{ inputs.image-name }}:${{ github.sha }}

@@ -11,7 +11,7 @@ resource "azurerm_resource_group" "default" {
 }
 
 resource "azurerm_kubernetes_cluster" "default" {
-  name                = "github-actions-aks-cluster"
+  name                = var.aks_cluster_name
   location            = azurerm_resource_group.default.location
   resource_group_name = azurerm_resource_group.default.name
   dns_prefix          = "gha-aks-demo"
@@ -28,10 +28,10 @@ resource "azurerm_kubernetes_cluster" "default" {
     type = "SystemAssigned"
   }
 
-#   service_principal {
-#     client_id     = var.appId
-#     client_secret = var.password
-#   }
+  #   service_principal {
+  #     client_id     = var.appId
+  #     client_secret = var.password
+  #   }
 
   role_based_access_control_enabled = true
 

@@ -14,10 +14,6 @@ data "aws_availability_zones" "available" {
   }
 }
 
-locals {
-  cluster_name = "github-actions-eks-cluster"
-}
-
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.8.1"
@@ -47,7 +43,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.8.5"
 
-  cluster_name    = local.cluster_name
+  cluster_name    = var.eks_cluster_name
   cluster_version = "1.33"
 
   cluster_endpoint_public_access           = true

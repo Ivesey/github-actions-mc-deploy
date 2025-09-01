@@ -12,8 +12,8 @@ jobs:
   build-and-push-azure-db-proxy:
     uses: ./.github/workflows/build-and-publish.yaml
     with:
-      registry: ghcr.io
-      image-name: ${{ github.actor }}/gha-demo-azure-db-proxy
+      registry: ${{ vars.REGISTRY_TO_PUSH_TO }}
+      image-name: ${{ github.actor }}/${{ vars.AZURE_PROXY_IMAGE }}
       working-directory: ./src/main-app
     secrets: inherit
 
