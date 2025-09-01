@@ -21,7 +21,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: main-app
-        image: ghcr.io/ivesey/gha-demo-main-app:latest
+        image: ghcr.io/ivesey/gha-demo-main-app
         ports:
         - containerPort: 80
         resources:
@@ -45,7 +45,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
       - name: proxy
-        image: ghcr.io/ivesey/gha-demo-azure-db-proxy:latest
+        image: ghcr.io/ivesey/gha-demo-azure-db-proxy
         resources:
           requests:
             cpu: 250m
