@@ -110,6 +110,8 @@ jobs:
           manifests: |
              ./base-manifests/app-manifest.yaml
           images: |
-            '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}'
-            '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}'
-          pull-images: false         
+            '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:main'
+            '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:main'
+          pull-images: true
+
+          #format is reg/repo/image@sha256:hash
