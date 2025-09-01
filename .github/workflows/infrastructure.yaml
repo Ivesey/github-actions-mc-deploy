@@ -110,6 +110,6 @@ jobs:
           manifests: |
              ./base-manifests/app-manifest.yaml
           images: |
-            '${{ vars.REGISTRY_TO_PUSH_TO }}/${{ github.actor }}/${{ vars.MAIN_APP_IMAGE}}:latest'
-            '${{ vars.REGISTRY_TO_PUSH_TO }}/${{ github.actor }}/${{ vars.AZURE_PROXY_IMAGE}}:latest'
+            '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:latest'
+            '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:latest'
           pull-images: false         
