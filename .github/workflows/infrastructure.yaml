@@ -82,6 +82,17 @@ jobs:
             -var aks_cluster_name=${{ vars.AKS_CLUSTER_NAME }} \
             -var resource_group_name=${{ vars.RESOURCE_GROUP_NAME }}
 
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
+          cluster-name: '${{ vars.AKS_CLUSTER_NAME }}'
+
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+
       - name: Apply latest Azure Manifest
         id: deploy-aks
         uses: Azure/k8s-deploy@v4
