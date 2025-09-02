@@ -54,10 +54,18 @@ jobs:
         run: |
           aws eks update-kubeconfig \
             --name ${{ vars.EKS_CLUSTER_NAME }} \
-            --region ${{ env.AWS_REGION }}    
-      - name: Manually delete gha-demo-aws namespace
-        run:
+            --region ${{ env.AWS_REGION }}
+      - name: Manually delete gha-demo-aws namespace and the Security Group
+        run: |
+          AWS_LB=$(kubectl get service/main-app \
+            --namespace=gha-demo-aws \
+            --output jsonpath="{.status.loadBalancer.ingress[0].hostname}" | cut -d"-" -f 1)
+          SG=$(aws elb describe-load-balancers \
+            --load-balancer-name $AWS_LB \
+            --query LoadBalancerDescriptions[].SecurityGroups[] \
+            --output text)
           kubectl delete namespace gha-demo-aws
+          aws ec2 delete-security-group --group-id $SG
       ###############################################################################
 
       - name: Setup Terraform

@@ -23,6 +23,35 @@ jobs:
       attestations: write
       id-token: write
 
+  update-azure-proxy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure Azure credentials
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
+          cluster-name: ${{ vars.AKS_CLUSTER_NAME }}
+
+      - name: Apply latest AWS Manifest
+        id: deploy-eks
+        run: |
+          kubectl set image deployment/main-app \
+            proxy=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:${{ github.sha }} \
+            --namespace gha-demo-azure
+
     # runs-on: ubuntu-latest
 
     # defaults:

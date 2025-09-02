@@ -22,8 +22,35 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-      
-    # runs-on: ubuntu-latest
+  
+  update-aws-proxy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.3.1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: github-actions-demo
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Set EKS context
+        id: set-eks-context
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ vars.EKS_CLUSTER_NAME }} \
+            --region ${{ vars.AWS_REGION }}
+
+      - name: Apply latest AWS Manifest
+        id: deploy-eks
+        run: |
+          kubectl set image deployment/main-app \
+            proxy=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AWS_PROXY_IMAGE}}:${{ github.sha }} \
+            --namespace gha-demo-aws
 
     # defaults:
     #   run:
