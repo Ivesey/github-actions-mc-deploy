@@ -120,10 +120,8 @@ jobs:
         id: set-eks-context
         run: |
           aws eks update-kubeconfig \
-            --name ${{ vars.AKS_CLUSTER_NAME }} \
+            --name ${{ vars.EKS_CLUSTER_NAME }} \
             --region ${{ env.AWS_REGION }}
-          # resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
-          # cluster-name: '${{ vars.AKS_CLUSTER_NAME }}'
 
       - name: Ensure AWS namespace
         id: create-eks-ns
