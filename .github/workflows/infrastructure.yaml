@@ -113,8 +113,19 @@ jobs:
             '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:main'
             '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:main'
           pull-images: false
-
           #format is reg/repo/image@sha256:hash
+
+      - name: Output load balancer IP
+        id: aks-lb
+        run: |
+          kubectl wait \
+            --for=jsonpath='{.status.loadBalancer.ingress}' \
+            service/main-app \
+            --namespace gha-demo-azure
+          AKS_LB=$(kubectl get service/main-app \
+            --namespace=gha-demo-azure \
+            --output jsonpath="{.status.loadBalancer.ingress[0].ip}")
+          echo "aks-lb=$AKS_LB" >> $GITHUB_OUTPUT
 
       - name: Set EKS context
         id: set-eks-context
@@ -136,5 +147,22 @@ jobs:
         if: ${{ steps.create-eks-ns.outputs.create == 'true' }}
         run: |
           sed 's/-azure-/-aws-/g' ../base-manifests/app-manifest.yaml \
-            | kubectl apply -n gha-demo-aws -f -
+            | kubectl apply --namespace gha-demo-aws -f -
         # NOTE: we should probably be using Kustomize here, but this demo is already very long!
+
+      - name: Output EKS LB address
+        id: eks-lb
+        run: |
+          kubectl wait \
+            --for=jsonpath='{.status.loadBalancer.ingress}' \
+            service/main-app \
+            --namespace gha-demo-aws
+          AWS_LB=$(kubectl get service/main-app \
+            --namespace=gha-demo-aws \
+            --output jsonpath="{.status.loadBalancer.ingress[0].ip}")
+          echo "aws-lb=$AWS_LB" >> $GITHUB_OUTPUT
+
+      - name: Output LB addresses
+        run: |
+          echo "AKS LB address: http://"${{ steps.aks-lb.outputs.aks-lb }}
+          echo "EKS LB address: http://"${{ steps.eks-lb.outputs.eks-lb }}
