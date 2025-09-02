@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "default" {
   location = var.resource_group_location
 
   tags = {
-    environment = "Demo"
+    environment = "GHADemo"
   }
 }
 
@@ -36,6 +36,6 @@ resource "azurerm_kubernetes_cluster" "default" {
   role_based_access_control_enabled = true
 
   tags = {
-    environment = "Demo"
+    environment = "GHADemo"
   }
 }

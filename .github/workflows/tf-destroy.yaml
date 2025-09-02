@@ -44,6 +44,22 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      # these three steps are necessary because TF doesn't know abut the LB resource
+      # annoyingly going to have to manually remove the ELB SG too. Could be tricky.
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Set EKS context
+        id: set-eks-context
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ vars.EKS_CLUSTER_NAME }} \
+            --region ${{ env.AWS_REGION }}    
+      - name: Manually delete gha-demo-aws namespace
+        run:
+          kubectl delete namespace gha-demo-aws
+      ###############################################################################
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
     
