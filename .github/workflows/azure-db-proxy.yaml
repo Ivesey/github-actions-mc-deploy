@@ -26,6 +26,15 @@ jobs:
   update-azure-proxy:
     runs-on: ubuntu-latest
 
+    needs:
+      build-and-push-azure-db-proxy
+
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
     steps:
       - name: Configure Azure credentials
         uses: azure/login@v2
