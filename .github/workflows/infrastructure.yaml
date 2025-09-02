@@ -131,6 +131,11 @@ jobs:
             kubectl create namespace gha-demo-aws
           fi
 
+      - name: debug
+        run: |
+          pwd
+          ls -all
+
       - name: Apply latest AWS Manifest
         id: deploy-eks
         if: ${{ steps.create-eks-ns.outputs.create == 'true' }}
