@@ -93,7 +93,7 @@ jobs:
         id: install-kubectl
         uses: azure/setup-kubectl@v3
 
-      - name: Ensure namespace
+      - name: Ensure Azure namespace
         id: create-ns
         run: |
           if [[ $(kubectl get namespace gha-demo-azure --ignore-not-found | wc -l) -eq 0 ]]; then
@@ -112,6 +112,31 @@ jobs:
           images: |
             '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:main'
             '${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:main'
-          pull-images: true
+          pull-images: false
 
           #format is reg/repo/image@sha256:hash
+
+      - name: Set EKS context
+        id: set-eks-context
+        run: |
+          aws eks update-kubeconfig \
+            --name ${{ vars.AKS_CLUSTER_NAME }} \
+            --region ${{ env.AWS_REGION }}
+          # resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
+          # cluster-name: '${{ vars.AKS_CLUSTER_NAME }}'
+
+      - name: Ensure AWS namespace
+        id: create-eks-ns
+        run: |
+          if [[ $(kubectl get namespace gha-demo-aws --ignore-not-found | wc -l) -eq 0 ]]; then
+            echo "create=true" >> $GITHUB_OUTPUT
+            kubectl create namespace gha-demo-aws
+          fi
+
+      - name: Apply latest AWS Manifest
+        id: deploy-eks
+        if: ${{ steps.create-eks-ns.outputs.create == 'true' }}
+        run: |
+          sed 's/-azure-/-aws-/g' ./base-manifests/app-manifest.yaml \
+            | kubectl apply -n gha-demo-aws -f -
+        # NOTE: we should probably be using Kustomize here, but this demo is already very long!
