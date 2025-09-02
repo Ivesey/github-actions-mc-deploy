@@ -94,16 +94,16 @@ jobs:
         uses: azure/setup-kubectl@v3
 
       - name: Ensure namespace
-        run: kubectl create namespace gha-demo-azure
-        continue-on-error: true
-
-      - name: Debug
+        id: create-ns
         run: |
-          pwd
-          ls -all
+          if [[ $(kubectl get namespace gha-demo-azure --ignore-not-found | wc -l) -eq 0 ]]; then
+            echo "create=true" >> $GITHUB_OUTPUT
+            kubectl create namespace gha-demo-azure
+          fi
 
       - name: Apply latest Azure Manifest
         id: deploy-aks
+        if: ${{ steps.create-ns.outputs.create == 'true' }}
         uses: Azure/k8s-deploy@v4
         with:
           namespace: 'gha-demo-azure'
