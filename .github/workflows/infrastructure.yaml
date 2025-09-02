@@ -131,15 +131,10 @@ jobs:
             kubectl create namespace gha-demo-aws
           fi
 
-      - name: debug
-        run: |
-          pwd
-          ls -all
-
       - name: Apply latest AWS Manifest
         id: deploy-eks
         if: ${{ steps.create-eks-ns.outputs.create == 'true' }}
         run: |
-          sed 's/-azure-/-aws-/g' ./base-manifests/app-manifest.yaml \
+          sed 's/-azure-/-aws-/g' ../base-manifests/app-manifest.yaml \
             | kubectl apply -n gha-demo-aws -f -
         # NOTE: we should probably be using Kustomize here, but this demo is already very long!
