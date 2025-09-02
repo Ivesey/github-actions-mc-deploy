@@ -23,7 +23,7 @@ spec:
       - name: main-app
         image: ghcr.io/ivesey/gha-demo-main-app:main
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         resources:
           requests:
             cpu: 250m
@@ -61,6 +61,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
+  - port: 80
+    targetPort: 8080
   selector:
     app: main-app
