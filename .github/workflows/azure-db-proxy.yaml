@@ -54,11 +54,11 @@ jobs:
           resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
           cluster-name: ${{ vars.AKS_CLUSTER_NAME }}
 
-      - name: Apply latest AWS Manifest
-        id: deploy-eks
+      - name: Apply latest Azure Manifest
+        id: deploy-aks
         run: |
           kubectl set image deployment/main-app \
-            proxy=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:${{ github.sha }} \
+            proxy=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:sha-${{ github.sha }} \
             --namespace gha-demo-azure
 
     # runs-on: ubuntu-latest
