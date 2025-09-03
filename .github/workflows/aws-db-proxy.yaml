@@ -58,7 +58,7 @@ jobs:
         id: deploy-eks
         run: |
           kubectl set image deployment/main-app \
-            proxy=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AWS_PROXY_IMAGE}}:${{ github.sha }} \
+            proxy=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AWS_PROXY_IMAGE}}:sha-${{ github.sha }} \
             --namespace gha-demo-aws
 
     # defaults:
