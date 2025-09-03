@@ -108,8 +108,8 @@ jobs:
           manifests: |
              ./base-manifests/app-manifest.yaml
           images: |
-            ${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:main
-            ${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:main
+            ${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:latest
+            ${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:latest
           pull-images: false
           #format is reg/repo/image@sha256:hash
 
@@ -158,9 +158,9 @@ jobs:
           AWS_LB=$(kubectl get service/main-app \
             --namespace=gha-demo-aws \
             --output jsonpath="{.status.loadBalancer.ingress[0].hostname}")
-          echo "aws-lb=$AWS_LB" >> $GITHUB_OUTPUT
+          echo "eks-lb=$AWS_LB" >> $GITHUB_OUTPUT
 
       - name: Output LB addresses
         run: |
-          echo "AKS LB address: http://"${{ steps.aks-lb.outputs.aks-lb }}
-          echo "EKS LB address: http://"${{ steps.eks-lb.outputs.eks-lb }}
+          echo AKS LB address: http://${{ steps.aks-lb.outputs.aks-lb }}
+          echo EKS LB address: http://${{ steps.eks-lb.outputs.eks-lb }}

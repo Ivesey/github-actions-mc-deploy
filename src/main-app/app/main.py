@@ -13,7 +13,7 @@ import traceback
 
 templates = Jinja2Templates(directory='/code/app/templates')
 
-def fake_proxy_invoke():
+def fake_db_proxy_invoke():
     try:
         response = urllib.request.urlopen("http://localhost:9090")
         db_proxy_response = response.read().decode('utf-8')
@@ -26,7 +26,7 @@ async def root(request):
     nodename = os.getenv('NODE_NAME', 'unknown')
     podname = os.getenv('POD_NAME', 'unknown')
     namespace = os.getenv('NAMESPACE', 'unknown')
-    db_proxy_response = fake_proxy_invoke()
+    db_proxy_response = fake_db_proxy_invoke()
 
     return templates.TemplateResponse('index.html',{
         'request': request,
