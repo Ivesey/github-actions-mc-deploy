@@ -98,5 +98,5 @@ jobs:
         id: deploy-eks
         run: |
           kubectl set image deployment/main-app \
-            main=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:sha-${{ github.sha }} \
+            main-app=${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:sha-${{ github.sha }} \
             --namespace gha-demo-aws
