@@ -54,7 +54,7 @@ jobs:
             --name ${{ vars.EKS_CLUSTER_NAME }} \
             --region ${{ vars.AWS_REGION }}
 
-      - name: Apply latest AWS Manifest
+      - name: Update AWS sidecar
         id: deploy-eks
         run: |
           kubectl set image deployment/main-app \

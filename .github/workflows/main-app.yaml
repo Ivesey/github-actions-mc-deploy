@@ -53,7 +53,7 @@ jobs:
           resource-group: ${{ vars.RESOURCE_GROUP_NAME }}
           cluster-name: ${{ vars.AKS_CLUSTER_NAME }}
 
-      - name: Apply latest Azure Manifest
+      - name: Update Azure deployment
         id: deploy-aks
         run: |
           kubectl set image deployment/main-app \
@@ -94,7 +94,7 @@ jobs:
             --name ${{ vars.EKS_CLUSTER_NAME }} \
             --region ${{ vars.AWS_REGION }}
 
-      - name: Apply latest AWS Manifest
+      - name: Update AWS deployment
         id: deploy-eks
         run: |
           kubectl set image deployment/main-app \

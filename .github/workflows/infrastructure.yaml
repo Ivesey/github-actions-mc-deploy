@@ -99,19 +99,12 @@ jobs:
             kubectl create namespace gha-demo-azure
           fi
 
-      - name: Apply latest Azure Manifest
+      - name: Apply Azure Manifest
         id: deploy-aks
         if: ${{ steps.create-ns.outputs.create == 'true' }}
-        uses: Azure/k8s-deploy@v4
-        with:
-          namespace: gha-demo-azure
-          manifests: |
-             ./base-manifests/app-manifest.yaml
-          images: |
-            ${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.MAIN_APP_IMAGE}}:latest
-            ${{ vars.REGISTRY_TO_PUSH_TO }}/ivesey/${{ vars.AZURE_PROXY_IMAGE}}:latest
-          pull-images: false
-          #format is reg/repo/image@sha256:hash
+        run: |
+          kubectl apply -f --namespace gha-demo-azure \
+            ../base-manifests/app-manifest.yaml
 
       - name: Output load balancer IP
         id: aks-lb
@@ -140,13 +133,14 @@ jobs:
             kubectl create namespace gha-demo-aws
           fi
 
-      - name: Apply latest AWS Manifest
+      - name: Apply AWS Manifest
         id: deploy-eks
         if: ${{ steps.create-eks-ns.outputs.create == 'true' }}
         run: |
           sed 's/-azure-/-aws-/g' ../base-manifests/app-manifest.yaml \
             | kubectl apply --namespace gha-demo-aws -f -
-        # NOTE: we should probably be using Kustomize here, but this demo is already very long!
+        # NOTE: we should probably be using Kustomize, GitOps and Helm here,
+        #       but this demo is already very long!
 
       - name: Output EKS LB address
         id: eks-lb
