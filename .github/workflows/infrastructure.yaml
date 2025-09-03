@@ -103,8 +103,8 @@ jobs:
         id: deploy-aks
         if: ${{ steps.create-ns.outputs.create == 'true' }}
         run: |
-          kubectl apply -f --namespace gha-demo-azure \
-            ../base-manifests/app-manifest.yaml
+          kubectl apply --namespace gha-demo-azure \
+            -f ../base-manifests/app-manifest.yaml
 
       - name: Output load balancer IP
         id: aks-lb
