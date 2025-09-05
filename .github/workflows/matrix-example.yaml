@@ -1,0 +1,22 @@
+name: Build and push Docker images matrix example
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform:
+          - linux/arm64/v8
+          - linux/amd64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: REPO/APP:MY_TAG
+          platforms: ${{ matrix.platform }}
