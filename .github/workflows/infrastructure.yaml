@@ -1,7 +1,6 @@
 name: "Infrastructure as Code pipeline"
 
 on:
-  workflow_dispatch:
   push:
     branches:
     - main
