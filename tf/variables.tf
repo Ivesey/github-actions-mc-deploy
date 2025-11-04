@@ -17,3 +17,8 @@ variable "eks_cluster_name" {
 variable "aws_region" {
   type = string
 }
+
+variable "placeholder" {
+  type    = string
+  default = "This is a placeholder variable."
+}
