@@ -18,7 +18,7 @@ variable "aws_region" {
   type = string
 }
 
-variable "version" {
+variable "version_number" {
   type    = string
   default = "1.0"
 }
