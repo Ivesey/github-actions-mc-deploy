@@ -18,7 +18,7 @@ variable "aws_region" {
   type = string
 }
 
-variable "placeholder" {
+variable "version" {
   type    = string
-  default = "This is a placeholder variable."
+  default = "1.0"
 }
